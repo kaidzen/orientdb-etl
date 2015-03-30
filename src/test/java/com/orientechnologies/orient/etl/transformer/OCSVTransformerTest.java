@@ -201,7 +201,7 @@ public class OCSVTransformerTest extends ETLBaseTest {
     @Test
     public void testGetCellContentDoubleQuoted() {
         String doubleQuotedString = "\"\"aaa\"\"";
-        String unQuotedString = "aaa";
+        String unQuotedString = "\"aaa\"";
         OCSVTransformer ocsvTransformer = new OCSVTransformer();
         assertEquals(unQuotedString, ocsvTransformer.getCellContent(doubleQuotedString));
     }
@@ -218,21 +218,13 @@ public class OCSVTransformerTest extends ETLBaseTest {
         OCSVTransformer ocsvTransformer = new OCSVTransformer();
         assertEquals(unQuotedString, ocsvTransformer.getCellContent(unQuotedString));
     }
-    @Test
-    public void testIsFiniteFloatConstsMaxValue() {
-        OCSVTransformer ocsvTransformer = new OCSVTransformer();
-        assertTrue(ocsvTransformer.isFinite(FloatConsts.MAX_VALUE));
-    }
 
     @Test
-    public void testIsFiniteFloatConstsMaxValueSubOne() {
+    public void testIsFiniteFloat() {
         OCSVTransformer ocsvTransformer = new OCSVTransformer();
-        assertTrue(ocsvTransformer.isFinite(FloatConsts.MAX_VALUE - 1.0f));
-    }
-
-    @Test
-    public void testIsFiniteFloatConstsMaxValueAddOne() {
-        OCSVTransformer ocsvTransformer = new OCSVTransformer();
-        assertFalse(ocsvTransformer.isFinite(FloatConsts.MAX_VALUE + 1.0f));
+        assertFalse(ocsvTransformer.isFinite(Float.NaN));
+        assertFalse(ocsvTransformer.isFinite(Float.POSITIVE_INFINITY));
+        assertFalse(ocsvTransformer.isFinite(Float.NEGATIVE_INFINITY));
+        assertTrue(ocsvTransformer.isFinite(0f));
     }
 }
