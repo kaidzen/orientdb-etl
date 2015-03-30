@@ -21,6 +21,7 @@ package com.orientechnologies.orient.etl.transformer;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.etl.ETLBaseTest;
 import org.junit.Test;
+import sun.misc.FloatConsts;
 
 import java.util.Date;
 import java.util.List;
@@ -187,5 +188,23 @@ public class OCSVTransformerTest extends ETLBaseTest {
         List<ODocument> res = getResult();
         ODocument doc = res.get(0);
         assertEquals(new Long(3000000000L), (Long)doc.field("number"));
+    }
+
+    @Test
+    public void testGetCellContent() {
+        String quotedString = "\"aaa\"";
+        String unQuotedSring = "aaa";
+        OCSVTransformer ocsvTransformer = new OCSVTransformer();
+        assertEquals(unQuotedSring, ocsvTransformer.getCellContent(quotedString));
+        assertEquals(unQuotedSring, ocsvTransformer.getCellContent(unQuotedSring));
+        assertEquals(null, ocsvTransformer.getCellContent(null));
+    }
+
+    @Test
+    public void testIsFinite() {
+        OCSVTransformer ocsvTransformer = new OCSVTransformer();
+        assertTrue(ocsvTransformer.isFinite(FloatConsts.MAX_VALUE));
+        assertTrue(ocsvTransformer.isFinite(FloatConsts.MAX_VALUE - 1.0f));
+        assertFalse(ocsvTransformer.isFinite(FloatConsts.MAX_VALUE + 1.0f));
     }
 }
