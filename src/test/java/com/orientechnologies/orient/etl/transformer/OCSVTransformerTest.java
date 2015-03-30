@@ -227,4 +227,48 @@ public class OCSVTransformerTest extends ETLBaseTest {
         assertFalse(ocsvTransformer.isFinite(Float.NEGATIVE_INFINITY));
         assertTrue(ocsvTransformer.isFinite(0f));
     }
+
+    @Test
+    public void testNullCell() {
+        String cfgJson = "{source: { content: { value: 'id,postId,text\n1,,Hello'} }, extractor : { row : {} }, transformers : [{ csv : {} }], loader : { test: {} } }";
+        process(cfgJson);
+        List<ODocument> res = getResult();
+        ODocument doc = res.get(0);
+        assertEquals(new Integer(1),(Integer)doc.field("id"));
+        assertNull((Integer)doc.field("postId"));
+        assertEquals("Hello",(String)doc.field("text"));
+    }
+
+    @Test
+    public void testNullValueInCell() {
+        String cfgJson = "{source: { content: { value: 'id,postId,text\n1,NULL,Hello'} }, extractor : { row : {} }, transformers : [{ csv : {nullValue: 'NULL'} }], loader : { test: {} } }";
+        process(cfgJson);
+        List<ODocument> res = getResult();
+        ODocument doc = res.get(0);
+        assertEquals(new Integer(1),(Integer)doc.field("id"));
+        assertNull((Integer)doc.field("postId"));
+        assertEquals("Hello", (String) doc.field("text"));
+    }
+
+    @Test
+    public void testNullValueInCellEmptyString() {
+        String cfgJson = "{source: { content: { value: 'id,title,text\n1,,Hello'} }, extractor : { row : {} }, transformers : [{ csv : {nullValue: 'NULL'} }], loader : { test: {} } }";
+        process(cfgJson);
+        List<ODocument> res = getResult();
+        ODocument doc = res.get(0);
+        assertEquals(new Integer(1), (Integer) doc.field("id"));
+        assertEquals("", (String)doc.field("title"));
+        assertEquals("Hello", (String) doc.field("text"));
+    }
+
+    @Test
+    public void testQuotedEmptyString() {
+        String cfgJson = "{source: { content: { value: 'id,title,text\n1,\"\",Hello'} }, extractor : { row : {} }, transformers : [{ csv : {} }], loader : { test: {} } }";
+        process(cfgJson);
+        List<ODocument> res = getResult();
+        ODocument doc = res.get(0);
+        assertEquals(new Integer(1), (Integer) doc.field("id"));
+        assertEquals("", (String)doc.field("title"));
+        assertEquals("Hello", (String) doc.field("text"));
+    }
 }
