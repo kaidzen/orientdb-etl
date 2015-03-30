@@ -201,10 +201,20 @@ public class OCSVTransformerTest extends ETLBaseTest {
     }
 
     @Test
-    public void testIsFinite() {
+    public void testIsFiniteFloatConstsMaxValue() {
         OCSVTransformer ocsvTransformer = new OCSVTransformer();
         assertTrue(ocsvTransformer.isFinite(FloatConsts.MAX_VALUE));
+    }
+
+    @Test
+    public void testIsFiniteFloatConstsMaxValueSubOne() {
+        OCSVTransformer ocsvTransformer = new OCSVTransformer();
         assertTrue(ocsvTransformer.isFinite(FloatConsts.MAX_VALUE - 1.0f));
+    }
+
+    @Test
+    public void testIsFiniteFloatConstsMaxValueAddOne() {
+        OCSVTransformer ocsvTransformer = new OCSVTransformer();
         assertFalse(ocsvTransformer.isFinite(FloatConsts.MAX_VALUE + 1.0f));
     }
 }
