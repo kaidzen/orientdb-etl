@@ -191,15 +191,41 @@ public class OCSVTransformerTest extends ETLBaseTest {
     }
 
     @Test
-    public void testGetCellContent() {
-        String quotedString = "\"aaa\"";
+    public void testGetCellContentSingleQuoted() {
+        String singleQuotedString = "\"aaa\"";
         String unQuotedSring = "aaa";
         OCSVTransformer ocsvTransformer = new OCSVTransformer();
-        assertEquals(unQuotedSring, ocsvTransformer.getCellContent(quotedString));
-        assertEquals(unQuotedSring, ocsvTransformer.getCellContent(unQuotedSring));
+        assertEquals(unQuotedSring, ocsvTransformer.getCellContent(singleQuotedString));
+    }
+
+    @Test
+    public void testGetCellContentDoubleQuoted() {
+        String doubleQuotedString = "\"\"aaa\"\"";
+        String unQuotedSring = "aaa";
+        OCSVTransformer ocsvTransformer = new OCSVTransformer();
+        assertEquals(unQuotedSring, ocsvTransformer.getCellContent(doubleQuotedString));
+    }
+
+    @Test
+    public void testGetCellContentNullValue() {
+        OCSVTransformer ocsvTransformer = new OCSVTransformer();
         assertEquals(null, ocsvTransformer.getCellContent(null));
     }
 
+    @Test
+    public void testGetCellContentQuoteInString() {
+        String quoteInString = "aa\"a";
+        String unQuotedSring = "aaa";
+        OCSVTransformer ocsvTransformer = new OCSVTransformer();
+        assertEquals(unQuotedSring, ocsvTransformer.getCellContent(quoteInString));
+    }
+
+    @Test
+    public void testGetCellContentWithoutQuoteString() {
+        String unQuotedSring = "aaa";
+        OCSVTransformer ocsvTransformer = new OCSVTransformer();
+        assertEquals(unQuotedSring, ocsvTransformer.getCellContent(unQuotedSring));
+    }
     @Test
     public void testIsFiniteFloatConstsMaxValue() {
         OCSVTransformer ocsvTransformer = new OCSVTransformer();
